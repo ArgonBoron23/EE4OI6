@@ -184,7 +184,8 @@
 				21,
 				22,
 				23,
-				24
+				24,
+				25
 			]
 		},
 		{
@@ -243,7 +244,7 @@
 			"language" : "ASM",
 			"sourceIndexes" : 
 			[
-				25
+				26
 			]
 		}
 	],
@@ -300,14 +301,15 @@
 				21,
 				22,
 				23,
-				24
+				24,
+				25
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				25
+				26
 			]
 		}
 	],
@@ -341,6 +343,12 @@
 			"backtrace" : 2,
 			"compileGroupIndex" : 1,
 			"path" : "Drivers/STM32H5xx_HAL_Driver/Src/stm32h5xx_hal_cortex.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 1,
+			"path" : "Drivers/STM32H5xx_HAL_Driver/Src/stm32h5xx_hal_icache.c",
 			"sourceGroupIndex" : 0
 		},
 		{
