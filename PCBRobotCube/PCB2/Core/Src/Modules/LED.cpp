@@ -1,0 +1,25 @@
+/*
+ * LED.cpp
+ *
+ *  Created on: Feb 5, 2025
+ *      Author: argon
+ */
+
+
+
+#include "Modules/LED.h"
+
+
+LED::LED()
+{
+	delayTimeMillis = 100;
+}
+
+void LED::blink()
+{
+
+	 BSP_LED_Toggle(LED_GREEN);
+	 HAL_Delay(100);
+}
+
+

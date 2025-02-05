@@ -13,6 +13,8 @@ HeaderFiles#0=..\Core\Inc\stm32h5xx_nucleo_conf.h
 HeaderFiles#1=..\Core\Inc\stm32h5xx_it.h
 HeaderFiles#2=..\Core\Inc\stm32h5xx_hal_conf.h
 HeaderFiles#3=..\Core\Inc\main.h
+HeaderFiles#4=..\Core\Inc\TMC2209.h
+
 HeaderFolderListSize=1
 HeaderPath#0=..\Core\Inc
 HeaderFiles=;
@@ -20,6 +22,7 @@ SourceFileListSize=3
 SourceFiles#0=..\Core\Src\stm32h5xx_it.c
 SourceFiles#1=..\Core\Src\stm32h5xx_hal_msp.c
 SourceFiles#2=..\Core\Src\main.cpp
+SourceFiles#3=..\Core\Src\TMC2209.cpp
 SourceFolderListSize=1
 SourcePath#0=..\Core\Src
 SourceFiles=;

@@ -18,10 +18,12 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "TMC2209.h"
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+TMC2209 motorDriver;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,6 +67,9 @@ uint32_t micros(void);
 
 /* USER CODE END 0 */
 
+
+
+
 /**
  * @brief  The application entry point.
  * @retval int
@@ -75,6 +80,7 @@ int main(void)
   SystemClock_Config();
   MX_GPIO_Init();
   MX_TIM2_Init();
+  motorDriver.initDriver();
 
   uint32_t deltaX, deltaY, deltaA, deltaB, currentPosA, currentPosB;
   deltaX = 1000 * 8;
@@ -91,7 +97,12 @@ int main(void)
 
   while (1)
   {
+    
+
     uint32_t currentTime = micros();
+    
+
+    motorDriver.setTargetSteps(500);
 
     // Motor A
     // Keep running until finished
@@ -309,6 +320,8 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
+
+
 
 #ifdef USE_FULL_ASSERT
 /**

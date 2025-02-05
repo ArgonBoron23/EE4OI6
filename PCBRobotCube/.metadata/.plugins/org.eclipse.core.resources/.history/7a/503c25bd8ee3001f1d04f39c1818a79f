@@ -1,0 +1,21 @@
+/*
+ * LED.cpp
+ *
+ *  Created on: Feb 5, 2025
+ *      Author: argon
+ */
+
+
+
+#include "Modules/LED.h"
+
+
+LED::LED(){
+	delayTimeMillis = 100;
+}
+
+void LED::blink(){
+	delayTimeMillis = 100;
+}
+
+

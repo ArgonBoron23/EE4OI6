@@ -1,0 +1,32 @@
+/*
+ * LED.h
+ *
+ *  Created on: Feb 5, 2025
+ *      Author: argon
+ */
+
+#ifndef INC_MODULES_LED_H_
+#define INC_MODULES_LED_H_
+
+
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "stm32h5xx_hal.h"
+#include "stm32h5xx_nucleo.h"
+#include <stdio.h>
+
+
+class LED {
+
+public:
+	LED();
+
+	uint32_t delayTimeMillis;
+
+
+	void blink();
+};
+
+
+#endif /* INC_MODULES_LED_H_ */
