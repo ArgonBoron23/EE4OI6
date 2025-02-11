@@ -47,7 +47,8 @@ __IO uint32_t BspButtonState = BUTTON_RELEASED;
 TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN PV */
-
+int32_t currentX = 0;
+int32_t currentY = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -69,71 +70,143 @@ uint32_t micros(void);
  * @brief  The application entry point.
  * @retval int
  */
-int main(void)
-{
-  HAL_Init();
-  SystemClock_Config();
-  MX_GPIO_Init();
-  MX_TIM2_Init();
+void moveUp(uint32_t steps) {
+  // Set directions for moving up
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET); // Motor A DIR
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET); // Motor B DIR
 
-  uint32_t deltaX, deltaY, deltaA, deltaB, currentPosA, currentPosB;
-  deltaX = 1000 * 8;
-  deltaY = 500 * 8;
-  deltaA = deltaX + deltaY;
-  deltaB = deltaX - deltaY;
-  currentPosA = 0;
-  currentPosB = 0;
+  uint32_t previousTime = micros();
+  for (uint32_t i = 0; i < steps; i++) {
+    while (micros() - previousTime < 100) {} // Wait for 2 microseconds
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET); // Motor A step
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET); // Motor B step
+    previousTime = micros();
+    while (micros() - previousTime < 100) {} // Wait for 2 microseconds
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+    previousTime = micros();
+  }
+}
 
-  uint32_t previousTimeA = micros(); // Store last time event
-  uint32_t previousTimeB = micros();
-  bool ledStateA = false; // Track LED state
-  bool ledStateB = false; // Track LED state
+void moveDown(uint32_t steps) {
+  // Set directions for moving down
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET); // Motor A DIR
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET); // Motor B DIR
 
-  while (1)
-  {
-    uint32_t currentTime = micros();
+  uint32_t previousTime = micros();
+  for (uint32_t i = 0; i < steps; i++) {
+    while (micros() - previousTime < 100) {} // Wait for 2 microseconds
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET); // Motor A step
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET); // Motor B step
+    previousTime = micros();
+    while (micros() - previousTime < 100) {} // Wait for 2 microseconds
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+    previousTime = micros();
+  }
+}
 
-    // Motor A
-    // Keep running until finished
-    if (currentPosA < deltaA)
-    {
-      if (ledStateA && (currentTime - previousTimeA >= 2))
-      {                                                       // If ON for some time (microseconds)
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET); // Turn off
-        previousTimeA = currentTime;
-        ledStateA = false;
-      }
-      else if (!ledStateA && (currentTime - previousTimeA >= 166))
-      {                                                     // If OFF for some time (microseconds)
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET); // Turn on (make a step)
-        previousTimeA = currentTime;
-        ledStateA = true;
-        currentPosA++;
+void moveRight(uint32_t steps) {
+  // Set directions for moving right
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);   // Motor A DIR
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET); // Motor B DIR
+
+  uint32_t previousTime = micros();
+  for (uint32_t i = 0; i < steps; i++) {
+    while (micros() - previousTime < 100) {} // Wait for 2 microseconds
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET); // Motor A step
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET); // Motor B step
+    previousTime = micros();
+    while (micros() - previousTime < 100) {} // Wait for 2 microseconds
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+    previousTime = micros();
+  }
+}
+
+void moveLeft(uint32_t steps) {
+  // Set directions for moving left
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET); // Motor A DIR
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);   // Motor B DIR
+
+  uint32_t previousTime = micros();
+  for (uint32_t i = 0; i < steps; i++) {
+    while (micros() - previousTime < 100) {} // Wait for 2 microseconds
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET); // Motor A step
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET); // Motor B step
+    previousTime = micros();
+    while (micros() - previousTime < 100) {} // Wait for 2 microseconds
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+    previousTime = micros();
+  }
+}
+
+void MoveTo(int32_t x, int32_t y) {
+  int32_t deltaX = x - currentX;
+  int32_t deltaY = y - currentY;
+
+  int32_t stepsX = abs(deltaX);
+  int32_t stepsY = abs(deltaY);
+  int32_t maxSteps = (stepsX > stepsY) ? stepsX : stepsY;
+
+  float ratioX = static_cast<float>(stepsX) / maxSteps;
+  float ratioY = static_cast<float>(stepsY) / maxSteps;
+
+  float accumulatedX = 0;
+  float accumulatedY = 0;
+
+  for (int32_t i = 0; i < maxSteps; i++) {
+    accumulatedX += ratioX;
+    accumulatedY += ratioY;
+
+    if (accumulatedX >= 1) {
+      accumulatedX -= 1;
+      if (deltaX > 0) {
+        moveRight(1);
+        currentX++;
+      } else {
+        moveLeft(1);
+        currentX--;
       }
     }
 
-    // Motor B
-    if (currentPosB < deltaB)
-    {
-      if (ledStateB && (currentTime - previousTimeB >= 2))
-      {                                                       // If ON for some time (microseconds)
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET); // Turn off
-        previousTimeB = currentTime;
-        ledStateB = false;
-      }
-      else if (!ledStateB && (currentTime - previousTimeB >= 500))
-      {                                                     // If OFF for some time (microseconds)
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET); // Turn on (make a step)
-        previousTimeB = currentTime;
-        ledStateB = true;
-        currentPosB++;
+    if (accumulatedY >= 1) {
+      accumulatedY -= 1;
+      if (deltaY > 0) {
+        moveUp(1);
+        currentY++;
+      } else {
+        moveDown(1);
+        currentY--;
       }
     }
   }
 }
 
-uint32_t micros(void)
-{
+int main(void) {
+  HAL_Init();
+  SystemClock_Config();
+  MX_GPIO_Init();
+  MX_TIM2_Init();
+
+  while (1) {
+    MoveTo(0, 0);        // Move to (0,0)
+    HAL_Delay(1000);     // Delay 1 second
+    MoveTo(9200, 6150);  // Move to (9200, 6150)
+    HAL_Delay(1000);     // Delay 1 second
+    MoveTo(18400, 12300);// Move to (18400, 12300)
+    HAL_Delay(1000);     // Delay 1 second
+    MoveTo(9200, 6150);  // Move to (9200, 6150)
+    HAL_Delay(1000);     // Delay 1 second
+    MoveTo(0, 12300);  // Move to (9200, 6150)
+    HAL_Delay(1000);     // Delay 1 second
+    MoveTo(18400, 0);  // Move to (9200, 6150)
+    HAL_Delay(1000);     // Delay 1 second
+  }
+}
+
+uint32_t micros(void) {
   return __HAL_TIM_GET_COUNTER(&htim2);
 }
 
@@ -193,7 +266,6 @@ void SystemClock_Config(void)
  */
 static void MX_ICACHE_Init(void)
 {
-
   /* USER CODE BEGIN ICACHE_Init 0 */
 
   /* USER CODE END ICACHE_Init 0 */
@@ -224,7 +296,6 @@ static void MX_ICACHE_Init(void)
  */
 static void MX_TIM2_Init(void)
 {
-
   /* USER CODE BEGIN TIM2_Init 0 */
 
   /* USER CODE END TIM2_Init 0 */
@@ -270,12 +341,23 @@ static void MX_TIM2_Init(void)
 static void MX_GPIO_Init(void)
 {
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  // Initialize Step pins
   GPIO_InitStruct.Pin = GPIO_PIN_4 | GPIO_PIN_5;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  // Initialize DIR pins for Motor A and Motor B
+  GPIO_InitStruct.Pin = GPIO_PIN_7;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
 /* USER CODE BEGIN 4 */
@@ -326,3 +408,6 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
+////////////// LOG OF CHANGES ///////////
+// movement fully controlled and corrected in every direction, speed is

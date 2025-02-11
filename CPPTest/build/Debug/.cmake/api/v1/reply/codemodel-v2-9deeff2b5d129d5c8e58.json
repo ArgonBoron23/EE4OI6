@@ -66,7 +66,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "CPPTest::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-CPPTest-Debug-73f82dfd010bf0eeb654.json",
+					"jsonFile" : "target-CPPTest-Debug-04cd90a64283bc49b7e7.json",
 					"name" : "CPPTest",
 					"projectIndex" : 0
 				}
@@ -76,8 +76,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/Users/argon/GitHub/EE4OI6/CPPTest/build/Debug",
-		"source" : "C:/Users/argon/GitHub/EE4OI6/CPPTest"
+		"build" : "C:/Users/mayar/GitHub/4OI6/EE4OI6/CPPTest/build/Debug",
+		"source" : "C:/Users/mayar/GitHub/4OI6/EE4OI6/CPPTest"
 	},
 	"version" : 
 	{
