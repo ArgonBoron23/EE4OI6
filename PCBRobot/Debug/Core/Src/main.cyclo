@@ -1,4 +1,0 @@
-../Core/Src/main.cpp:66:5:int main()	2
-../Core/Src/main.cpp:145:6:void SystemClock_Config()	4
-../Core/Src/main.cpp:199:6:void BSP_PB_Callback(Button_TypeDef)	2
-../Core/Src/main.cpp:211:6:void Error_Handler()	1

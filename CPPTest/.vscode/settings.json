@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "main.h": "cpp",
-        "TMC2209.h": "cpp"
-    }
-}
