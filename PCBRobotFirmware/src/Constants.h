@@ -49,21 +49,22 @@ namespace MOTOR_E
 
 namespace COREXY
 {
-    uint16_t MAX_X_MM = 459,
-             MAX_Y_MM = 296;
-    float STEPS_PER_MM = 5.0;
+    constexpr uint16_t MAX_X_MM = 459,
+                       MAX_Y_MM = 296;
+    constexpr float STEPS_PER_MM = 5.0;
 }
 
 namespace Z_AXIS
 {
-    float STEPS_PER_MM = 37.5;
-    uint8_t PIN_LIMIT_SWITCH = 22;
+    constexpr float STEPS_PER_MM = 37.5;
+    constexpr uint8_t PIN_LIMIT_SWITCH = 22;
 }
 
-namespace SOLDER_SPOOL_GUN{
-    float STEPS_PER_MM = 45.0; // 7 mm PD roller on 50:10 gear ratio
-    uint8_t PIN_BEAM_BREAK = 21;
-    
+namespace SOLDER_SPOOL_GUN
+{
+    constexpr float STEPS_PER_MM = 45.0; // 7 mm PD roller on 50:10 gear ratio
+    constexpr uint8_t PIN_BEAM_BREAK = 21;
+
 }
 
 #endif
