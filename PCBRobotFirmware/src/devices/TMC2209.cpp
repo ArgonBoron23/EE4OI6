@@ -32,7 +32,7 @@ void TMC2209::setup(HardwareSerial & serial,
 }
 #endif
 
-void TMC2209::setup(UART & serial,
+void TMC2209::setup(SerialUART & serial,
   long serial_baud_rate,
   SerialAddress serial_address)
 {

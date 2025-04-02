@@ -79,6 +79,7 @@ void setup()
   pinMode(DIRECTION_PIN_A, OUTPUT);
   pinMode(DIRECTION_PIN_B, OUTPUT);
 
+
   digitalWrite(DIRECTION_PIN_A, HIGH);
   digitalWrite(DIRECTION_PIN_B, LOW);
 

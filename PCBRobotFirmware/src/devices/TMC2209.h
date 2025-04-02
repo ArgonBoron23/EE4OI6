@@ -42,7 +42,7 @@ public:
   // Alternate rx and tx pins may be specified for certain microcontrollers e.g.
   // ESP32 and RP2040
 
-  void setup(UART & serial,
+  void setup(SerialUART & serial,
     long serial_baud_rate=115200,
     SerialAddress serial_address=SERIAL_ADDRESS_0);
 
