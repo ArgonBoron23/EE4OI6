@@ -4,8 +4,6 @@
 #include <Arduino.h>
 #include <TMC2209.h>
 
-
-
 // Driver in slot A1
 // Schematic - motor 3
 namespace MOTOR_A
@@ -14,6 +12,8 @@ namespace MOTOR_A
                       PIN_DIR = 2;
 
     constexpr TMC2209::SerialAddress UART_ADDR = TMC2209::SERIAL_ADDRESS_2;
+
+    constexpr bool IS_INVERTED = false;
 
 }
 
@@ -26,6 +26,8 @@ namespace MOTOR_B
 
     constexpr TMC2209::SerialAddress UART_ADDR = TMC2209::SERIAL_ADDRESS_0;
 
+    constexpr bool IS_INVERTED = false;
+
 }
 
 // Driver in slot A3
@@ -37,6 +39,8 @@ namespace MOTOR_Z
 
     constexpr TMC2209::SerialAddress UART_ADDR = TMC2209::SERIAL_ADDRESS_3;
 
+    constexpr bool IS_INVERTED = true;
+
 }
 
 // Driver in slot A2
@@ -47,6 +51,8 @@ namespace MOTOR_E
                       PIN_DIR = 4;
 
     constexpr TMC2209::SerialAddress UART_ADDR = TMC2209::SERIAL_ADDRESS_1;
+
+    constexpr bool IS_INVERTED = false;
 }
 
 namespace COREXY
@@ -54,6 +60,7 @@ namespace COREXY
     constexpr uint16_t MAX_X_MM = 459,
                        MAX_Y_MM = 296;
     constexpr float STEPS_PER_MM = 5.0;
+    constexpr float MAX_SPEED_RPM = 150.0;
 }
 
 namespace Z_AXIS

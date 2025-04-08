@@ -37,8 +37,8 @@ public:
 
     void init();
 
-    int getCurrentSteps();
-    int getTargetSteps();
+    int32_t getCurrentSteps();
+    int32_t getTargetSteps();
 
     void setCurrentSteps(int32_t resetCurrentSteps);
     void setTargetSteps(int32_t targetSteps);

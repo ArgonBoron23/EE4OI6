@@ -1,6 +1,7 @@
 #include <TMC2209.h>
 #include <TMC2209Controller.h>
 #include "Constants.h"
+#include "CoreXY.h"
 
 // This example will not work on Arduino boards without HardwareSerial ports,
 // such as the Uno, Nano, and Mini.
@@ -36,7 +37,9 @@ TMC2209Controller
     stepperE(&stepperDriverE, 1.8, MOTOR_E::PIN_DIR, MOTOR_E::PIN_STEP),
     stepperZ(&stepperDriverZ, 1.8, MOTOR_Z::PIN_DIR, MOTOR_Z::PIN_STEP);
 
-TMC2209Controller thisController(stepperA);
+// CoreXY motion system
+CoreXY m_CoreXY(&stepperA, &stepperB);
+
 
 void setup()
 {
@@ -98,7 +101,6 @@ void setup()
 
     stepperB.m_TMC2209->enable();
     delay(10);
-
   }
 
   stepperE.m_TMC2209->setup(serial_stream, SERIAL_BAUD_RATE, MOTOR_E::UART_ADDR);
@@ -158,46 +160,208 @@ void setup()
   stepperZ.init();
   stepperE.init();
 
-  stepperZ.setInverted(true);
+  stepperA.setInverted(MOTOR_A::IS_INVERTED);
+  stepperB.setInverted(MOTOR_B::IS_INVERTED);
+  stepperE.setInverted(MOTOR_E::IS_INVERTED);
+  stepperZ.setInverted(MOTOR_Z::IS_INVERTED);
 
   stepperA.setMaxSpeed(150);
   stepperB.setMaxSpeed(150);
   stepperZ.setMaxSpeed(150);
-  stepperE.setMaxSpeed(200);
+  stepperE.setMaxSpeed(100);
 }
 
 void loop()
 {
 
-  stepperB.setTargetSteps(600);
-  stepperA.setTargetSteps(600);
-  stepperE.setTargetSteps(200);
-  stepperZ.setTargetSteps(200);
-
+  m_CoreXY.moveTo(0, 0);
 
   do
   {
-    stepperB.run();
-    stepperA.run();
-    stepperE.run();
+    m_CoreXY.periodic();
+
+  } while (!m_CoreXY.isAtTarget());
+
+  delay(1000);
+
+
+
+  m_CoreXY.moveTo(67, 9);
+
+  do
+  {
+    m_CoreXY.periodic();
+
+  
+  } while (!m_CoreXY.isAtTarget());
+  delay(1000);
+
+
+  stepperZ.setTargetSteps(250);
+
+  do
+  {
     stepperZ.run();
-    //Serial.println(stepperB.getCurrentSteps());
 
-  } while (!stepperB.isAtTarget());
+  
+  } while (!stepperZ.isAtTarget());
 
-  stepperB.setTargetSteps(0);
-  stepperA.setTargetSteps(0);
-  stepperE.setTargetSteps(0);
+  delay(1000);
+
+  // Solder
+  m_CoreXY.moveTo(67, 9-1);
+
+  do
+  {
+    m_CoreXY.periodic();
+
+  
+  } while (!m_CoreXY.isAtTarget());
+
+
+
+  // Dispense solder
+
+
+  stepperE.setTargetSteps(610);
+
+  do
+  {
+    stepperE.run();
+
+  
+  } while (!stepperE.isAtTarget());
+
+  delay(2000);
+
+
+  // Dispense solder
+  stepperE.setTargetSteps(200);
+
+  do
+  {
+    stepperE.run();
+
+  
+  } while (!stepperE.isAtTarget());
+
+  delay(500);
+
+
+
+  // Retract iron
+
+  delay(1000);
+
   stepperZ.setTargetSteps(0);
 
   do
   {
-    stepperB.run();
-    stepperA.run();
-    stepperE.run();
     stepperZ.run();
 
-    //Serial.println(stepperB.getCurrentSteps());
+  
+  } while (!stepperZ.isAtTarget());
 
-  } while (!stepperB.isAtTarget());
+  
+
+
+  // NEXT PIN
+  m_CoreXY.moveTo(64.5, 9);
+
+  do
+  {
+    m_CoreXY.periodic();
+
+  
+  } while (!m_CoreXY.isAtTarget());
+  delay(1000);
+
+
+  stepperZ.setTargetSteps(250);
+
+  do
+  {
+    stepperZ.run();
+
+  
+  } while (!stepperZ.isAtTarget());
+
+  delay(1000);
+
+  // Solder
+  m_CoreXY.moveTo(64.5, 9-1);
+
+  do
+  {
+    m_CoreXY.periodic();
+
+  
+  } while (!m_CoreXY.isAtTarget());
+
+
+
+  // Dispense solder
+
+
+  stepperE.setTargetSteps(610);
+
+  do
+  {
+    stepperE.run();
+
+  
+  } while (!stepperE.isAtTarget());
+
+  delay(2000);
+
+
+  // Dispense solder
+  stepperE.setTargetSteps(200);
+
+  do
+  {
+    stepperE.run();
+
+  
+  } while (!stepperE.isAtTarget());
+
+  delay(500);
+
+
+
+  // Retract iron
+
+  delay(1000);
+
+  stepperZ.setTargetSteps(0);
+
+  do
+  {
+    stepperZ.run();
+
+  
+  } while (!stepperZ.isAtTarget());
+
+  /// END
+ 
+
+  delay(500);
+
+  m_CoreXY.moveTo(0, 0);
+
+  do
+  {
+    m_CoreXY.periodic();
+
+  } while (!m_CoreXY.isAtTarget());
+
+  delay(1000);
+
+
+  
+
+  while(1){
+
+  }
+
 }

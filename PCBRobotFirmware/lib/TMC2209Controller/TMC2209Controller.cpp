@@ -33,14 +33,14 @@ void TMC2209Controller::init()
 
 }
 
-int TMC2209Controller::getCurrentSteps()
+int32_t TMC2209Controller::getCurrentSteps()
 {
-    return currentSteps;
+    return (int32_t)(currentSteps / microsteps);
 }
 
-int TMC2209Controller::getTargetSteps()
+int32_t TMC2209Controller::getTargetSteps()
 {
-    return targetSteps;
+    return (int32_t)(targetSteps / microsteps);
 }
 
 void TMC2209Controller::setCurrentSteps(int32_t resetCurrentSteps)
