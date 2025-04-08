@@ -1,4 +1,6 @@
-#include "devices/TMC2209.h"
+#include <TMC2209.h>
+#include <TMC2209Controller.h>
+#include "Constants.h"
 
 // This example will not work on Arduino boards without HardwareSerial ports,
 // such as the Uno, Nano, and Mini.
@@ -11,100 +13,191 @@ HardwareSerial &serial_stream = Serial1;
 const long SERIAL_BAUD_RATE = 115200;
 const int DELAY = 4000;
 const int32_t VELOCITY = 200;
-const uint32_t STEP_COUNT = 500;
+const uint32_t STEP_COUNT = 200;
 // current values may need to be reduced to prevent overheating depending on
 // specific motor and power supply voltage
-const uint8_t RUN_CURRENT_PERCENT = 100;
+const uint8_t RUN_CURRENT_PERCENT = 50;
 const uint8_t MICROSTEPS_PER_STEP_EXPONENT_MIN = 0;
 const uint8_t MICROSTEPS_PER_STEP_EXPONENT_MAX = 8;
 const uint8_t MICROSTEPS_PER_STEP_EXPONENT_INC = 1;
-const uint16_t HALF_STEP_DURATION_MICROSECONDS = 2000;
+const uint16_t HALF_STEP_DURATION_MICROSECONDS = 500;
 const uint16_t STOP_DURATION = 200;
-const uint8_t STEP_PIN_A = 14;
-const uint8_t DIRECTION_PIN_A = 15;
-const uint8_t STEP_PIN_B = 12;
-const uint8_t DIRECTION_PIN_B = 13;
-const uint8_t REPLY_DELAY = 80;
-const TMC2209::SerialAddress SERIAL_ADDRESS_1 = TMC2209::SERIAL_ADDRESS_1;
-const TMC2209::SerialAddress SERIAL_ADDRESS_2 = TMC2209::SERIAL_ADDRESS_2;
+
+const uint8_t REPLY_DELAY = 40;
 
 uint8_t microsteps_per_step_exponent = MICROSTEPS_PER_STEP_EXPONENT_MIN;
 
 // Instantiate TMC2209
-TMC2209 stepper_driver_A, stepper_driver_B;
+TMC2209 stepperDriverA, stepperDriverB, stepperDriverZ, stepperDriverE;
+
+TMC2209Controller
+    stepperA(&stepperDriverA, 1.8, MOTOR_A::PIN_DIR, MOTOR_A::PIN_STEP),
+    stepperB(&stepperDriverB, 1.8, MOTOR_B::PIN_DIR, MOTOR_B::PIN_STEP),
+    stepperE(&stepperDriverE, 1.8, MOTOR_E::PIN_DIR, MOTOR_E::PIN_STEP),
+    stepperZ(&stepperDriverZ, 1.8, MOTOR_Z::PIN_DIR, MOTOR_Z::PIN_STEP);
+
+TMC2209Controller thisController(stepperA);
 
 void setup()
 {
+
   delay(2000);
   Serial.begin(SERIAL_BAUD_RATE);
 
-  stepper_driver_A.setup(serial_stream, SERIAL_BAUD_RATE, SERIAL_ADDRESS_1);
-
-  if (stepper_driver_A.isCommunicating())
+  stepperA.m_TMC2209->setup(serial_stream, SERIAL_BAUD_RATE, MOTOR_A::UART_ADDR);
+  delay(10);
+  if (stepperA.m_TMC2209->isCommunicating())
   {
-    stepper_driver_A.clearDriveError();
-    stepper_driver_A.disableVSense();
-    stepper_driver_A.setReplyDelay(REPLY_DELAY);
-
-    stepper_driver_A.setMicrostepsPerStepPowerOfTwo(0);
-    stepper_driver_A.disableCoolStep();
-    stepper_driver_A.disableStealthChop();
-    stepper_driver_A.setRunCurrent(RUN_CURRENT_PERCENT);
-    stepper_driver_A.setHoldCurrent(10);
-    stepper_driver_A.enable();
-    stepper_driver_A.setStallGuardThreshold(100);
-    stepper_driver_A.getStallGuardResult();
+    delay(10);
+    stepperA.m_TMC2209->clearDriveError();
+    delay(10);
+    stepperA.m_TMC2209->disableVSense();
+    delay(10);
+    stepperA.m_TMC2209->setReplyDelay(REPLY_DELAY);
+    delay(10);
+    stepperA.m_TMC2209->setMicrostepsPerStepPowerOfTwo(0);
+    delay(10);
+    stepperA.m_TMC2209->disableCoolStep();
+    delay(10);
+    stepperA.m_TMC2209->disableStealthChop();
+    delay(10);
+    stepperA.m_TMC2209->setRunCurrent(RUN_CURRENT_PERCENT);
+    delay(10);
+    stepperA.m_TMC2209->setHoldCurrent(10);
+    delay(10);
+    stepperA.m_TMC2209->enable();
+    delay(10);
   }
 
-  stepper_driver_B.setup(serial_stream, SERIAL_BAUD_RATE, SERIAL_ADDRESS_2);
-
-  if (stepper_driver_B.isCommunicating())
+  stepperB.m_TMC2209->setup(serial_stream, SERIAL_BAUD_RATE, MOTOR_B::UART_ADDR);
+  delay(10);
+  if (stepperB.m_TMC2209->isCommunicating())
   {
-    stepper_driver_B.clearDriveError();
-    stepper_driver_B.disableVSense();
+    stepperB.m_TMC2209->clearDriveError();
+    delay(10);
+    stepperB.m_TMC2209->disableVSense();
+    delay(10);
 
-    stepper_driver_B.setReplyDelay(REPLY_DELAY);
+    stepperB.m_TMC2209->setReplyDelay(REPLY_DELAY);
+    delay(10);
 
-    stepper_driver_B.setMicrostepsPerStepPowerOfTwo(0);
-    stepper_driver_B.disableCoolStep();
-    stepper_driver_B.disableStealthChop();
-    stepper_driver_B.setRunCurrent(RUN_CURRENT_PERCENT);
-    stepper_driver_B.setHoldCurrent(10);
-    stepper_driver_B.enable();
+    stepperB.m_TMC2209->setMicrostepsPerStepPowerOfTwo(0);
+    delay(10);
+
+    stepperB.m_TMC2209->disableCoolStep();
+    delay(10);
+
+    stepperB.m_TMC2209->disableStealthChop();
+    delay(10);
+
+    stepperB.m_TMC2209->setRunCurrent(RUN_CURRENT_PERCENT);
+    delay(10);
+
+    stepperB.m_TMC2209->setHoldCurrent(10);
+    delay(10);
+
+    stepperB.m_TMC2209->enable();
+    delay(10);
+
   }
 
-  pinMode(STEP_PIN_A, OUTPUT);
-  pinMode(STEP_PIN_B, OUTPUT);
+  stepperE.m_TMC2209->setup(serial_stream, SERIAL_BAUD_RATE, MOTOR_E::UART_ADDR);
+  delay(10);
+  if (stepperE.m_TMC2209->isCommunicating())
+  {
+    delay(10);
+    stepperE.m_TMC2209->clearDriveError();
+    delay(10);
+    stepperE.m_TMC2209->disableVSense();
+    delay(10);
+    stepperE.m_TMC2209->setReplyDelay(REPLY_DELAY);
+    delay(10);
+    stepperE.m_TMC2209->setMicrostepsPerStepPowerOfTwo(0);
+    delay(10);
+    stepperE.m_TMC2209->disableCoolStep();
+    delay(10);
+    stepperE.m_TMC2209->disableStealthChop();
+    delay(10);
+    stepperE.m_TMC2209->setRunCurrent(RUN_CURRENT_PERCENT);
+    delay(10);
+    stepperE.m_TMC2209->setHoldCurrent(10);
+    delay(10);
+    stepperE.m_TMC2209->enable();
+    delay(10);
+  }
 
-  pinMode(DIRECTION_PIN_A, OUTPUT);
-  pinMode(DIRECTION_PIN_B, OUTPUT);
+  stepperZ.m_TMC2209->setup(serial_stream, SERIAL_BAUD_RATE, MOTOR_Z::UART_ADDR);
+  delay(10);
+  if (stepperZ.m_TMC2209->isCommunicating())
+  {
+    delay(10);
+    stepperZ.m_TMC2209->clearDriveError();
+    delay(10);
+    stepperZ.m_TMC2209->disableVSense();
+    delay(10);
+    stepperZ.m_TMC2209->setReplyDelay(REPLY_DELAY);
+    delay(10);
+    stepperZ.m_TMC2209->setMicrostepsPerStepPowerOfTwo(0);
+    delay(10);
+    stepperZ.m_TMC2209->disableCoolStep();
+    delay(10);
+    stepperZ.m_TMC2209->disableStealthChop();
+    delay(10);
+    stepperZ.m_TMC2209->setRunCurrent(RUN_CURRENT_PERCENT);
+    delay(10);
+    stepperZ.m_TMC2209->setHoldCurrent(10);
+    delay(10);
+    stepperZ.m_TMC2209->enableAutomaticGradientAdaptation();
+    delay(10);
+    stepperZ.m_TMC2209->enable();
+    delay(10);
+  }
 
+  stepperA.init();
+  stepperB.init();
+  stepperZ.init();
+  stepperE.init();
 
-  digitalWrite(DIRECTION_PIN_A, HIGH);
-  digitalWrite(DIRECTION_PIN_B, LOW);
+  stepperZ.setInverted(true);
 
-  // stepper_driver_A.moveAtVelocity(VELOCITY);
+  stepperA.setMaxSpeed(150);
+  stepperB.setMaxSpeed(150);
+  stepperZ.setMaxSpeed(150);
+  stepperE.setMaxSpeed(200);
 }
 
 void loop()
 {
-  // One step takes two iterations through the for loop
-  for (uint32_t i = 0; i < STEP_COUNT * 2; ++i)
+
+  stepperB.setTargetSteps(600);
+  stepperA.setTargetSteps(600);
+  stepperE.setTargetSteps(200);
+  stepperZ.setTargetSteps(200);
+
+
+  do
   {
-    digitalWrite(STEP_PIN_A, !digitalRead(STEP_PIN_A));
-    digitalWrite(STEP_PIN_B, !digitalRead(STEP_PIN_B));
+    stepperB.run();
+    stepperA.run();
+    stepperE.run();
+    stepperZ.run();
+    //Serial.println(stepperB.getCurrentSteps());
 
-    delayMicroseconds(HALF_STEP_DURATION_MICROSECONDS);
-  }
-  digitalWrite(DIRECTION_PIN_A, !digitalRead(DIRECTION_PIN_A));
-  digitalWrite(DIRECTION_PIN_B, !digitalRead(DIRECTION_PIN_B));
+  } while (!stepperB.isAtTarget());
 
+  stepperB.setTargetSteps(0);
+  stepperA.setTargetSteps(0);
+  stepperE.setTargetSteps(0);
+  stepperZ.setTargetSteps(0);
 
-  stepper_driver_A.disable();
-  stepper_driver_B.disable();
+  do
+  {
+    stepperB.run();
+    stepperA.run();
+    stepperE.run();
+    stepperZ.run();
 
-  delay(STOP_DURATION);
+    //Serial.println(stepperB.getCurrentSteps());
 
-  stepper_driver_A.enable();
-  stepper_driver_B.enable();
+  } while (!stepperB.isAtTarget());
 }
